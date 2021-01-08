@@ -138,7 +138,7 @@ def main():
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
-    #palette = get_palette(14)
+    palette = get_palette(num_classes)
     with torch.no_grad():
         for idx, batch in enumerate(tqdm(dataloader)):
             image, meta = batch
@@ -157,13 +157,13 @@ def main():
             logits_result = transform_logits(upsample_output.data.cpu().numpy(), c, s, w, h, input_size=input_size)
             parsing_result = np.argmax(logits_result, axis=2)
             parsing_result_path = os.path.join(args.output_dir, img_name[:-4] + '.png')
-            output_arr = np.asarray(parsing_result, dtype=np.uint8)
+            #output_arr = np.asarray(parsing_result, dtype=np.uint8)
 
-            new_arr = np.full(output_arr.shape, 7)
-            for old, new in trans_dict.items():
-                new_arr = np.where(output_arr == old, new, new_arr)
-            output_img = Image.fromarray(np.asarray(new_arr, dtype=np.uint8))
-            #output_img.putpalette(palette)
+            #new_arr = np.full(output_arr.shape, 7)
+            #for old, new in trans_dict.items():
+            #    new_arr = np.where(output_arr == old, new, new_arr)
+            output_img = Image.fromarray(np.asarray(parsing_result, dtype=np.uint8))
+            output_img.putpalette(palette)
             output_img.save(parsing_result_path)
             if args.logits:
                 logits_result_path = os.path.join(args.output_dir, img_name[:-4] + '.npy')

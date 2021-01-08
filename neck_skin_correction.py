@@ -257,8 +257,10 @@ def main():
     import numpy as np
 
     img=cv2.imread('./image-parse-new/real_cut.png')
+    img_avatar=cv2.imread('./image-parse-new/avatar_in1.png')
 
     model_cut = np.asarray(img)
+    model_cut2 = np.asarray(img_avatar)
 
     print(np.unique(img))
 
@@ -298,9 +300,16 @@ def main():
 
         new_arr = np.where(model_cut == old, new, new_arr)
 
+    new_arr2 = np.full(model_cut2.shape, 7)
+
+    for old, new in trans_dict.items():
+
+        new_arr2 = np.where(model_cut == old, new, new_arr2)
+
 
 
     cv2.imwrite("./outputs/real_cut.png", new_arr)
+    cv2.imwrite("./outputs/avatar_in1.png", new_arr2)
 
 
 if __name__ == '__main__':
